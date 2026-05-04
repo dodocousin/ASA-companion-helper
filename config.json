@@ -5,7 +5,7 @@
     "GuildID": "12345",
     "AllowedRoleIDs": [
       "12345"
-    ],12345"
+    ]
   },
   "Rcon": {
     "TimeoutSeconds": 5
