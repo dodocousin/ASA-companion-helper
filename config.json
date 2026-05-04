@@ -1,0 +1,27 @@
+{
+  "Discord": {
+    "Token": "12345",
+    "ClientID": "12345",
+    "GuildID": "12345",
+    "AllowedRoleIDs": [
+      "12345"
+    ],12345"
+  },
+  "Rcon": {
+    "TimeoutSeconds": 5
+  },
+  "Servers": [
+    {
+      "ServerName": "Theisland",
+      "IP": "192.168.0.2",
+      "Port": 27000,
+      "Password": "12345"
+    },
+    {
+      "ServerName": "Astraeos",
+      "IP": "192.168.0.2",
+      "Port": 27002,
+      "Password": "12345"
+    }
+  ]
+}
