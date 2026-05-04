@@ -13,6 +13,7 @@ A powerful Discord bot for managing ARK Survival Ascended server clusters throug
 - 🛡️ **Error Handling** - Graceful handling of connection issues and timeouts
 - 🔒 **Secure** - RCON passwords never exposed in logs or Discord
 - 🦖 **Dino Spawning** - Spawn 150+ creatures with custom stats (requires mod)
+- 🔇 **Mute / Unmute Integration** - Player mute commands available only when using the author's private ARK plugin
 - ⏱️ **Cooldown System** - Prevents command spam (2-second cooldown)
 - 🚦 **Command Queue** - Prevents bot crashes from concurrent operations
 - 💪 **Crash Prevention** - Enterprise-grade error handling, bot never crashes
@@ -25,13 +26,13 @@ A powerful Discord bot for managing ARK Survival Ascended server clusters throug
 | `/rcon` | Send raw RCON command to a specific server | `/rcon servername:"Astraeos" command:"ListPlayers"` |
 | `/rcon_all` | Send raw RCON command to all servers | `/rcon_all command:"SaveWorld"` |
 | `/broadcast` | Broadcast message to server(s) | `/broadcast servername:"ALL" text:"Server restart in 10 minutes"` |
-| `/mute` | Mute a player by EOS ID | `/mute servername:"The Island" eosid:"0002abc..."` |
-| `/unmute` | Unmute a player by EOS ID | `/unmute servername:"ALL" eosid:"0002abc..."` |
+| `/mute` | Mute a player by EOS ID ⚠️ **Requires private plugin** | `/mute servername:"The Island" eosid:"0002abc..."` |
+| `/unmute` | Unmute a player by EOS ID ⚠️ **Requires private plugin** | `/unmute servername:"ALL" eosid:"0002abc..."` |
 | `/addpoints` | Add points to a player | `/addpoints servername:"Astraeos" eosid:"0002abc..." quantity:500` |
 | `/spawndino` | Spawn a dino with custom stats ⚠️ **Requires Mod** | `/spawndino servername:"Astraeos" dino:"Rex" level:150 ...` |
 | `/reload_config` | Reload bot configuration | `/reload_config` |
 
-## ⚠️ Important: Mod Requirements
+## ⚠️ Important: Requirements by Command
 
 ### `/spawndino` Command
 
@@ -41,7 +42,24 @@ The `/spawndino` command **ONLY works if your ARK server has the following mod i
 
 This command uses the `PCS.SpawnDino` script command provided by the mod. Without this mod installed on your server, the command will not function.
 
-**Other commands** (`/rcon`, `/broadcast`, `/mute`, etc.) work with vanilla ARK servers and do not require any mods.
+### `/mute` and `/unmute` Commands
+
+The `/mute` and `/unmute` commands **ONLY work with the author's private ARK server plugin**.
+
+These commands rely on custom server-side RCON commands provided by that private plugin. They are **not vanilla ARK Survival Ascended RCON commands**, and they will not work on a normal ASA server unless that private plugin is installed and configured.
+
+If you are using this bot without the private plugin, you can remove or ignore the `/mute` and `/unmute` command files.
+
+### Vanilla-Compatible Commands
+
+The following commands work with standard ARK Survival Ascended RCON and do not require extra mods or private plugins:
+
+- `/rcon`
+- `/rcon_all`
+- `/broadcast`
+- `/reload_config`
+
+`/addpoints` may also require a custom server-side plugin or system depending on how your ARK server handles points.
 
 ## Installation
 
@@ -52,6 +70,7 @@ This command uses the `PCS.SpawnDino` script command provided by the mod. Withou
 - **Discord Bot Token** (see setup instructions below)
 - **ARK servers** with RCON enabled
 - **Optional**: Pelayori's Cryo Storage mod (for `/spawndino` command)
+- **Optional / Private**: Author's private ARK plugin (required for `/mute` and `/unmute`)
 
 ### Step 1: Install Node.js
 
@@ -258,6 +277,8 @@ pm2 startup
 ```
 
 ### Player Management
+
+> ⚠️ `/mute` and `/unmute` require the author's private ARK plugin. They are not vanilla ASA RCON commands.
 
 ```
 /mute servername:"The Island" eosid:"0002abc123def456"
@@ -504,6 +525,15 @@ If you see `⏱️ Please wait X seconds`:
 2. Check bot has permission to send messages in that channel
 3. Check console for audit log errors
 
+### /mute or /unmute not working
+
+These commands require the author's private ARK server plugin. They will not work on a vanilla ARK Survival Ascended server.
+
+1. Verify that the private plugin is installed on the ARK server
+2. Verify that the plugin exposes the required mute/unmute RCON commands
+3. Restart the ARK server after installing or updating the plugin
+4. If you do not have access to the private plugin, remove or ignore the `/mute` and `/unmute` commands
+
 ### /spawndino not working
 
 **Most common issue:** Server doesn't have Pelayori's Cryo Storage mod installed
@@ -518,7 +548,8 @@ If you see `⏱️ Please wait X seconds`:
 ```
 ark-discord-rcon-bot/
 ├── package.json                 # Dependencies and scripts
-├── config.json                  # Configuration file
+├── config.example.json          # Example configuration file
+├── config.json                  # Local configuration file (do not commit)
 ├── dinos.json                   # Dino database (150+ creatures)
 ├── index.js                     # Main bot file
 ├── deploy-commands.js           # Command registration script
