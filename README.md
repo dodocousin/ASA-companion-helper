@@ -30,9 +30,22 @@ A powerful Discord bot for managing ARK Survival Ascended server clusters throug
 | `/unmute` | Unmute a player by EOS ID ⚠️ **Requires private plugin** | `/unmute servername:"ALL" eosid:"0002abc..."` |
 | `/addpoints` | Add points to a player | `/addpoints servername:"Astraeos" eosid:"0002abc..." quantity:500` |
 | `/spawndino` | Spawn a dino with custom stats ⚠️ **Requires Mod** | `/spawndino servername:"Astraeos" dino:"Rex" level:150 ...` |
+| `/lootbox` | Give GOATARK lootboxes to players ⚠️ **Requires GOATARK Mod** | `/lootbox playerid:"0002abc..." type:GOAT amount:1 server:"ALL"` |
 | `/reload_config` | Reload bot configuration | `/reload_config` |
 
 ## ⚠️ Important: Requirements by Command
+
+### `/lootbox` Command
+
+The `/lootbox` command **ONLY works on servers running the GOATARK mod with GOATARK servers**.
+
+This command uses the custom `scriptcommand GOATARK GiveLootBox` provided by the GOATARK mod system. The command will not function on vanilla ARK Survival Ascended servers or servers without the GOATARK mod installed.
+
+**Supported Lootbox Types:**
+- GOAT Package, Premium Package, R2G Package, Killer Package
+- Resource LootBox, Gear LootBox, Breeding Pair LootBox, Mixed LootBox
+
+See `LOOTBOX_GUIDE.md` for detailed usage instructions and how to add custom lootbox types.
 
 ### `/spawndino` Command
 
@@ -303,6 +316,29 @@ pm2 startup
 /spawndino servername:"ALL" dino:"Rex" level:190 maturity:100 imprint:100 gender:Male neutered:No hp:60 stamina:40 oxygen:? food:? water:? weight:50 melee:70 speed:? crafting:?
 ```
 
+### GOATARK Lootboxes (Requires GOATARK Mod)
+
+> ⚠️ `/lootbox` requires servers running the GOATARK mod. This command will not work on vanilla ARK servers.
+
+**Give 1 GOAT lootbox to a player on all servers:**
+```
+/lootbox playerid:"000270ce7aa540bca6c8674861f24208" type:GOAT amount:1 server:"ALL"
+```
+
+**Give 5 Premium lootboxes to a specific server:**
+```
+/lootbox playerid:"000270ce7aa540bca6c8674861f24208" type:Premium amount:5 server:"Astraeos"
+```
+
+**Give multiple Resource lootboxes:**
+```
+/lootbox playerid:"000270ce7aa540bca6c8674861f24208" type:Resource amount:10 server:"The Island"
+```
+
+**Available lootbox types:** GOAT, Premium, R2G, Killer, Resource, Gear, Breeding, Mixed
+
+For detailed lootbox documentation and how to add custom types, see `LOOTBOX_GUIDE.md`.
+
 ### Configuration
 
 ```
@@ -551,9 +587,11 @@ ark-discord-rcon-bot/
 ├── config.example.json          # Example configuration file
 ├── config.json                  # Local configuration file (do not commit)
 ├── dinos.json                   # Dino database (150+ creatures)
+├── lootboxes.json               # Lootbox configuration (8 types)
 ├── index.js                     # Main bot file
 ├── deploy-commands.js           # Command registration script
 ├── README.md                    # This file
+├── LOOTBOX_GUIDE.md             # Detailed lootbox documentation
 └── src/
     ├── config.js                # Config loader
     ├── permissions.js           # Permission checker
@@ -569,6 +607,7 @@ ark-discord-rcon-bot/
         ├── unmute.js            # /unmute command
         ├── addpoints.js         # /addpoints command
         ├── spawndino.js         # /spawndino command (requires mod)
+        ├── lootbox.js           # /lootbox command (requires GOATARK mod)
         └── reloadConfig.js      # /reload_config command
 ```
 

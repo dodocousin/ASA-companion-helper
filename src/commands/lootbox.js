@@ -87,8 +87,8 @@ module.exports = {
                 .setMaxValue(100))
         .addStringOption(option =>
             option.setName('server')
-                .setDescription('Server to send the lootbox on (optional - sends to all if not specified)')
-                .setRequired(false)
+                .setDescription('Server to send the lootbox on (or ALL for all servers)')
+                .setRequired(true)
                 .setAutocomplete(true)),
 
     async autocomplete(interaction) {

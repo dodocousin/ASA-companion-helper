@@ -7,7 +7,7 @@ The `/lootbox` command allows administrators to easily give GOATARK lootboxes to
 
 ### Basic Command Format
 ```
-/lootbox playerid:<eos_id> type:<lootbox_type> amount:<number> [server:<server_name>]
+/lootbox playerid:<eos_id> type:<lootbox_type> amount:<number> server:<server_name>
 ```
 
 ### Parameters
@@ -27,8 +27,8 @@ The `/lootbox` command allows administrators to easily give GOATARK lootboxes to
 
 - **amount** (required): Number of lootboxes (1-100)
 
-- **server** (optional): Specific server name or "ALL"
-  - If not specified, defaults to ALL servers
+- **server** (required): Specific server name or "ALL"
+  - Must select a server or "ALL" to send to all servers
 
 ### Examples
 
