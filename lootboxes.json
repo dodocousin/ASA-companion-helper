@@ -1,0 +1,60 @@
+{
+  "lootboxTypes": {
+    "GOAT": {
+      "displayName": "GOAT Package",
+      "itemRolls": 13,
+      "hasDino": 0,
+      "itemEntryID": "GOAT_Package",
+      "dinoEntryID": "0"
+    },
+    "Premium": {
+      "displayName": "Premium Package",
+      "itemRolls": 12,
+      "hasDino": 0,
+      "itemEntryID": "Premium_Package",
+      "dinoEntryID": "0"
+    },
+    "R2G": {
+      "displayName": "R2G Package",
+      "itemRolls": 13,
+      "hasDino": 0,
+      "itemEntryID": "R2G_Package",
+      "dinoEntryID": "0"
+    },
+    "Killer": {
+      "displayName": "Killer Package",
+      "itemRolls": 7,
+      "hasDino": 0,
+      "itemEntryID": "Killer_Package",
+      "dinoEntryID": "0"
+    },
+    "Resource": {
+      "displayName": "Resource LootBox",
+      "itemRolls": 4,
+      "hasDino": 0,
+      "itemEntryID": "Resource_LootBox",
+      "dinoEntryID": "0"
+    },
+    "Gear": {
+      "displayName": "Gear LootBox",
+      "itemRolls": 4,
+      "hasDino": 0,
+      "itemEntryID": "Gear_LootBox",
+      "dinoEntryID": "0"
+    },
+    "Breeding": {
+      "displayName": "Breeding Pair LootBox",
+      "itemRolls": 0,
+      "hasDino": 1,
+      "itemEntryID": "0",
+      "dinoEntryID": "Breeding_Pair_LootBox"
+    },
+    "Mixed": {
+      "displayName": "Mixed LootBox",
+      "itemRolls": 4,
+      "hasDino": 1,
+      "itemEntryID": "Gear_Resources_LootBox",
+      "dinoEntryID": "Dinos_LootBox"
+    }
+  }
+}
