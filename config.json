@@ -5,7 +5,8 @@
     "GuildID": "12345",
     "AllowedRoleIDs": [
       "12345"
-    ]
+    ],
+	"AuditLogChannelID": "AuditChannelID"
   },
   "Rcon": {
     "TimeoutSeconds": 5

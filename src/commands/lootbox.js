@@ -8,7 +8,15 @@ const path = require('path');
 
 // Load lootbox configuration
 const lootboxConfigPath = path.join(__dirname, '..', '..', 'lootboxes.json');
-const lootboxConfig = JSON.parse(fs.readFileSync(lootboxConfigPath, 'utf8'));
+let lootboxConfig = JSON.parse(fs.readFileSync(lootboxConfigPath, 'utf8'));
+
+/**
+ * Reload the lootbox configuration from disk
+ */
+function reloadLootboxConfig() {
+    delete require.cache[require.resolve(lootboxConfigPath)];
+    lootboxConfig = JSON.parse(fs.readFileSync(lootboxConfigPath, 'utf8'));
+}
 
 /**
  * Get all lootbox type names
@@ -40,8 +48,16 @@ function buildLootboxCommand(playerid, type, amount) {
         throw new Error(`Unknown lootbox type: ${type}`);
     }
 
-    // Format: scriptcommand GOATARK GiveLootBox <playerid> <amount> <itemRolls>,<hasDino>,<itemEntryID>,<dinoEntryID>
-    return `scriptcommand GOATARK GiveLootBox ${playerid} ${amount} ${lootbox.itemRolls},${lootbox.hasDino},${lootbox.itemEntryID},${lootbox.dinoEntryID}`;
+    let params;
+    if (lootbox.hasDino === 1) {
+        // Dino lootbox format: <amount>,<itemRolls>,0,<dinoEntryID>
+        params = `${amount},${lootbox.itemRolls},0,${lootbox.dinoEntryID}`;
+    } else {
+        // Standard format: <itemRolls>,<hasDino>,<itemEntryID>,<dinoEntryID>
+        params = `${lootbox.itemRolls},${lootbox.hasDino},${lootbox.itemEntryID},${lootbox.dinoEntryID}`;
+    }
+
+    return `scriptcommand GOATARK GiveLootBox ${playerid} ${amount} ${params}`;
 }
 
 /**
@@ -58,6 +74,7 @@ function validatePlayerId(playerid) {
 }
 
 module.exports = {
+    reloadLootboxConfig,
     data: new SlashCommandBuilder()
         .setName('lootbox')
         .setDescription('Give GOATARK lootboxes to a player')
@@ -69,16 +86,7 @@ module.exports = {
             option.setName('type')
                 .setDescription('Lootbox type')
                 .setRequired(true)
-                .addChoices(
-                    { name: 'GOAT Package', value: 'GOAT' },
-                    { name: 'Premium Package', value: 'Premium' },
-                    { name: 'R2G Package', value: 'R2G' },
-                    { name: 'Killer Package', value: 'Killer' },
-                    { name: 'Resource LootBox', value: 'Resource' },
-                    { name: 'Gear LootBox', value: 'Gear' },
-                    { name: 'Breeding Pair LootBox', value: 'Breeding' },
-                    { name: 'Mixed LootBox', value: 'Mixed' }
-                ))
+                .setAutocomplete(true))
         .addIntegerOption(option =>
             option.setName('amount')
                 .setDescription('Number of lootboxes (1-100)')
@@ -92,16 +100,35 @@ module.exports = {
                 .setAutocomplete(true)),
 
     async autocomplete(interaction) {
-        const focusedValue = interaction.options.getFocused();
-        const serverNames = config.getServerNames(true); // Include "ALL"
-        
-        const filtered = serverNames.filter(name =>
-            name.toLowerCase().includes(focusedValue.toLowerCase())
-        );
+        const focusedOption = interaction.options.getFocused(true);
 
-        await interaction.respond(
-            filtered.slice(0, 25).map(name => ({ name: name, value: name }))
-        );
+        if (focusedOption.name === 'type') {
+            const focusedValue = focusedOption.value;
+            const types = getLootboxTypes();
+
+            const filtered = types.filter(key =>
+                key.toLowerCase().includes(focusedValue.toLowerCase()) ||
+                (lootboxConfig.lootboxTypes[key].displayName || '').toLowerCase().includes(focusedValue.toLowerCase())
+            );
+
+            await interaction.respond(
+                filtered.slice(0, 25).map(key => ({
+                    name: lootboxConfig.lootboxTypes[key].displayName || key,
+                    value: key
+                }))
+            );
+        } else if (focusedOption.name === 'server') {
+            const focusedValue = focusedOption.value;
+            const serverNames = config.getServerNames(true); // Include "ALL"
+
+            const filtered = serverNames.filter(name =>
+                name.toLowerCase().includes(focusedValue.toLowerCase())
+            );
+
+            await interaction.respond(
+                filtered.slice(0, 25).map(name => ({ name: name, value: name }))
+            );
+        }
     },
 
     async execute(interaction) {

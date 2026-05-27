@@ -90,6 +90,15 @@ client.on(Events.InteractionCreate, async interaction => {
         // Set cooldown before executing command
         cooldowns.setCooldown(interaction.user.id, interaction.commandName);
 
+        // Guard: skip if the interaction token has already expired (>2.8s since creation)
+        // This happens when Discord reconnects or the gateway delivers the event late
+        const interactionAge = Date.now() - interaction.createdTimestamp;
+        if (interactionAge > 2800) {
+            cooldowns.clearCooldown(interaction.user.id, interaction.commandName);
+            console.warn(`⚠️ Interaction /${interaction.commandName} arrived too late (${interactionAge}ms after creation), token likely expired. Skipping.`);
+            return;
+        }
+
         console.log(`[COMMAND] ${interaction.user.tag} used /${interaction.commandName} in ${interaction.guild.name}`);
         await command.execute(interaction);
         
@@ -98,6 +107,14 @@ client.on(Events.InteractionCreate, async interaction => {
         
         // Clear cooldown on error so user can retry
         cooldowns.clearCooldown(interaction.user.id, interaction.commandName);
+
+        // If the interaction token expired (Discord error 10062), we cannot reply at all.
+        // This can happen after a gateway reconnect or if the event was delivered too late.
+        // Just log a clean warning and skip — no point trying to reply to a dead token.
+        if (error.code === 10062) {
+            console.warn(`⚠️ Interaction /${interaction.commandName} token expired (10062). The user can retry the command.`);
+            return;
+        }
         
         // Determine error message
         let errorContent = '❌ There was an error executing this command!';
